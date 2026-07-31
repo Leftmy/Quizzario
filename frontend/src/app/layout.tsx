@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Quiz Builder',
+  title: 'Quizzario',
   description: 'Create and manage custom quizzes',
 };
 

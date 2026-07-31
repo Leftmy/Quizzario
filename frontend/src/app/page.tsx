@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function HomePage() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-6">
-      <h1 className="text-4xl font-bold mb-6 text-white">Quiz Builder Platform</h1>
+      <h1 className="text-4xl font-bold mb-6 text-white">Quizzario Platform</h1>
       <div className="flex gap-4">
         <Link
           href="/quizzes"

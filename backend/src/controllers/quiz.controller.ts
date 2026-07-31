@@ -11,6 +11,7 @@ export const createQuiz = async (req: Request, res: Response) => {
     if (err.name === 'ZodError') {
       return res.status(400).json({ error: 'Validation failed', details: err.errors });
     }
+    console.error('Error creating quiz:', err);
     res.status(500).json({ error: 'Failed to create quiz' });
   }
 };
@@ -20,6 +21,7 @@ export const getAllQuizzes = async (_req: Request, res: Response) => {
     const quizzes = await QuizService.getAllQuizzes();
     res.json(quizzes);
   } catch (err) {
+    console.error('Error fetching quizzes:', err);
     res.status(500).json({ error: 'Failed to fetch quizzes' });
   }
 };
@@ -32,6 +34,7 @@ export const getQuizById = async (req: Request, res: Response) => {
     }
     res.json(quiz);
   } catch (err) {
+    console.error('Error fetching quiz by ID:', err);
     res.status(500).json({ error: 'Failed to fetch quiz' });
   }
 };
@@ -50,6 +53,7 @@ export const submitQuiz = async (req: Request, res: Response) => {
     if (err.name === 'ZodError') {
       return res.status(400).json({ error: 'Validation failed', details: err.errors });
     }
+    console.error('Error submitting quiz:', err);
     res.status(500).json({ error: 'Failed to submit quiz' });
   }
 };
@@ -63,6 +67,7 @@ export const deleteQuiz = async (req: Request, res: Response) => {
     await QuizService.deleteQuiz(req.params.id);
     res.status(204).send();
   } catch (err) {
+    console.error('Error deleting quiz:', err);
     res.status(500).json({ error: 'Failed to delete quiz' });
   }
 };

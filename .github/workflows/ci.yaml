@@ -1,0 +1,65 @@
+name: CI Run Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: quiz_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        run: npx prisma generate
+
+      - name: Push Database Schema
+        working-directory: ./backend
+        env:
+          DATABASE_URL: "postgresql://postgres:postgrespassword@localhost:5432/quiz_db?schema=public"
+        run: npx prisma db push
+
+      - name: Run Seed Script
+        working-directory: ./backend
+        env:
+          DATABASE_URL: "postgresql://postgres:postgrespassword@localhost:5432/quiz_db?schema=public"
+        run: npm run seed --if-present
+
+      - name: Run Backend Lint
+        working-directory: ./backend
+        run: npm run lint
+
+      - name: Run Tests
+        working-directory: ./backend
+        env:
+          DATABASE_URL: "postgresql://postgres:postgrespassword@localhost:5432/quiz_db?schema=public"
+        run: npm test --if-present

@@ -15,10 +15,8 @@ export default function QuizPlayerPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Стан для збереження відповідей користувача: { questionId: string | string[] }
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
-  // Стан для збереження результату після сабміту
   const [result, setResult] = useState<QuizResult | null>(null);
   const [isPlayMode, setIsPlayMode] = useState(false);
 
@@ -38,7 +36,6 @@ export default function QuizPlayerPage() {
     if (quizId) fetchQuiz();
   }, [quizId]);
 
-  // Обробники зміни відповідей
   const handleSingleAnswer = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
@@ -70,9 +67,9 @@ export default function QuizPlayerPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-4 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/2 mb-6"></div>
-        <div className="h-32 bg-gray-100 rounded-xl"></div>
-        <div className="h-32 bg-gray-100 rounded-xl"></div>
+        <div className="h-8 bg-slate-800 rounded w-1/2 mb-6"></div>
+        <div className="h-32 bg-slate-800/60 rounded-2xl border border-slate-700"></div>
+        <div className="h-32 bg-slate-800/60 rounded-2xl border border-slate-700"></div>
       </div>
     );
   }
@@ -80,10 +77,10 @@ export default function QuizPlayerPage() {
   if (error) {
     return (
       <div className="max-w-3xl mx-auto p-6">
-        <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-200 mb-4">
+        <div className="p-4 bg-red-950/60 text-red-200 rounded-xl border border-red-800 mb-4">
           {error}
         </div>
-        <Link href="/quizzes" className="text-blue-600 font-semibold hover:underline">
+        <Link href="/quizzes" className="text-emerald-400 font-semibold hover:underline">
           ← Back to Quizzes
         </Link>
       </div>
@@ -94,23 +91,23 @@ export default function QuizPlayerPage() {
 
   if (result) {
     return (
-      <div className="max-w-3xl mx-auto p-6 space-y-6">
-        <div className="bg-white p-8 rounded-2xl border text-center shadow-sm space-y-4">
-          <h1 className="text-3xl font-bold text-gray-900">Quiz Completed!</h1>
+      <div className="max-w-3xl mx-auto p-6 space-y-6 text-slate-100">
+        <div className="bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center shadow-xl space-y-4">
+          <h1 className="text-3xl font-bold text-white">Quiz Completed!</h1>
 
-          <div className="inline-block p-6 bg-blue-50 rounded-full my-2">
-            <span className="text-5xl font-extrabold text-blue-600">{result.score}%</span>
+          <div className="inline-block p-6 bg-emerald-500/10 rounded-full my-2 border border-emerald-500/20">
+            <span className="text-5xl font-extrabold text-emerald-400">{result.score}%</span>
           </div>
 
-          <p className="text-lg text-gray-600">
-            You answered <span className="font-bold text-gray-900">{result.correctCount}</span> out
-            of <span className="font-bold text-gray-900">{result.totalQuestions}</span> questions
+          <p className="text-lg text-slate-300">
+            You answered <span className="font-bold text-white">{result.correctCount}</span> out of{' '}
+            <span className="font-bold text-white">{result.totalQuestions}</span> questions
             correctly.
           </p>
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-800">Review Answers</h2>
+          <h2 className="text-xl font-bold text-white">Review Answers</h2>
           {quiz.questions.map((q, idx) => {
             const detail = result.details.find((d) => d.questionId === q.id);
             const isCorrect = detail?.isCorrect;
@@ -118,36 +115,40 @@ export default function QuizPlayerPage() {
             return (
               <div
                 key={q.id || idx}
-                className={`p-6 rounded-xl border ${
-                  isCorrect ? 'bg-green-50/50 border-green-200' : 'bg-red-50/50 border-red-200'
+                className={`p-6 rounded-2xl border ${
+                  isCorrect
+                    ? 'bg-emerald-950/30 border-emerald-800/50'
+                    : 'bg-red-950/30 border-red-800/50'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <span className="text-xs font-semibold text-gray-400 block mb-1">
+                    <span className="text-xs font-semibold text-slate-400 block mb-1">
                       Question #{idx + 1} ({q.type})
                     </span>
-                    <h3 className="font-bold text-gray-800 text-lg">{q.text}</h3>
+                    <h3 className="font-bold text-white text-lg">{q.text}</h3>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                      isCorrect
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        : 'bg-red-500/20 text-red-300 border border-red-500/30'
                     }`}
                   >
                     {isCorrect ? 'Correct' : 'Incorrect'}
                   </span>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-gray-200/60 text-sm space-y-1">
-                  <p className="text-gray-600">
-                    <span className="font-semibold">Your Answer: </span>
+                <div className="mt-4 pt-4 border-t border-slate-700/60 text-sm space-y-1">
+                  <p className="text-slate-300">
+                    <span className="font-semibold text-white">Your Answer: </span>
                     {Array.isArray(detail?.userAnswer)
                       ? detail?.userAnswer.join(', ') || 'None'
                       : detail?.userAnswer || 'None'}
                   </p>
                   {!isCorrect && (
-                    <p className="text-green-700 font-medium">
-                      <span className="font-semibold">Correct Answer(s): </span>
+                    <p className="text-emerald-400 font-medium">
+                      <span className="font-semibold text-white">Correct Answer(s): </span>
                       {detail?.correctAnswers.join(', ')}
                     </p>
                   )}
@@ -160,7 +161,7 @@ export default function QuizPlayerPage() {
         <div className="flex justify-between items-center pt-4">
           <Link
             href="/quizzes"
-            className="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300"
+            className="px-6 py-2.5 bg-slate-800 text-slate-200 font-semibold rounded-xl hover:bg-slate-700 border border-slate-700 transition-colors"
           >
             All Quizzes
           </Link>
@@ -169,7 +170,7 @@ export default function QuizPlayerPage() {
               setResult(null);
               setAnswers({});
             }}
-            className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700"
+            className="px-6 py-2.5 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20"
           >
             Try Again
           </button>
@@ -180,18 +181,21 @@ export default function QuizPlayerPage() {
 
   if (!isPlayMode) {
     return (
-      <div className="max-w-3xl mx-auto p-6 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6">
+      <div className="max-w-3xl mx-auto p-6 space-y-8 text-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700 pb-6">
           <div>
-            <Link href="/quizzes" className="text-sm font-semibold text-blue-600 hover:underline">
+            <Link
+              href="/quizzes"
+              className="text-sm font-semibold text-emerald-400 hover:underline"
+            >
               ← Back to Quizzes
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mt-2">{quiz.title}</h1>
-            <p className="text-gray-500 text-sm mt-1">Read-only structural preview of the quiz.</p>
+            <h1 className="text-3xl font-bold text-white mt-2">{quiz.title}</h1>
+            <p className="text-slate-400 text-sm mt-1">Read-only structural preview of the quiz.</p>
           </div>
           <button
             onClick={() => setIsPlayMode(true)}
-            className="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm"
+            className="inline-flex items-center justify-center px-5 py-2.5 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20"
           >
             Play Quiz
           </button>
@@ -201,18 +205,18 @@ export default function QuizPlayerPage() {
           {quiz.questions.map((q, idx) => (
             <div
               key={q.id || idx}
-              className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4"
+              className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"
             >
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Question {idx + 1} of {quiz.questions.length}
                 </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded font-medium">
+                <span className="text-xs bg-slate-800 text-emerald-400 px-2.5 py-1 rounded font-semibold border border-slate-700">
                   {q.type}
                 </span>
               </div>
 
-              <h3 className="text-lg font-semibold text-gray-800">{q.text}</h3>
+              <h3 className="text-lg font-bold text-white">{q.text}</h3>
 
               {/* BOOLEAN */}
               {q.type === 'BOOLEAN' && (
@@ -220,9 +224,9 @@ export default function QuizPlayerPage() {
                   {['true', 'false'].map((val) => (
                     <div
                       key={val}
-                      className="flex-1 p-3 border border-gray-200 bg-gray-50 rounded-xl text-center font-medium capitalize text-gray-400 cursor-not-allowed"
+                      className="flex-1 p-3 border border-slate-700 bg-slate-800/60 text-slate-300 rounded-xl text-center font-medium capitalize cursor-not-allowed"
                     >
-                      {val}
+                      <span>{val}</span>
                     </div>
                   ))}
                 </div>
@@ -231,9 +235,9 @@ export default function QuizPlayerPage() {
               {/* INPUT */}
               {q.type === 'INPUT' && (
                 <div className="pt-2">
-                  <div className="w-full border border-gray-200 bg-gray-50 rounded-lg p-3 text-sm text-gray-400 flex items-center gap-2 cursor-not-allowed">
+                  <div className="w-full border border-slate-700 bg-slate-800/60 rounded-xl p-3 text-sm text-slate-400 flex items-center gap-2 cursor-not-allowed">
                     <svg
-                      className="w-4 h-4 text-gray-400 shrink-0"
+                      className="w-4 h-4 text-slate-400 shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -256,14 +260,14 @@ export default function QuizPlayerPage() {
                   {q.options?.map((opt) => (
                     <div
                       key={opt}
-                      className="flex items-center p-3 border border-gray-200 bg-gray-50 rounded-xl text-sm font-medium text-gray-400 cursor-not-allowed"
+                      className="flex items-center p-3 border border-slate-700 bg-slate-800/60 rounded-xl text-sm font-medium text-slate-300 cursor-not-allowed"
                     >
                       <input
                         type="checkbox"
                         disabled
-                        className="w-4 h-4 text-gray-400 rounded mr-3 cursor-not-allowed"
+                        className="w-4 h-4 text-slate-500 rounded mr-3 cursor-not-allowed"
                       />
-                      {opt}
+                      <span>{opt}</span>
                     </div>
                   ))}
                 </div>
@@ -276,17 +280,17 @@ export default function QuizPlayerPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-6">
+    <div className="max-w-3xl mx-auto p-6 space-y-8 text-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700 pb-6">
         <div>
           <button
             onClick={() => setIsPlayMode(false)}
-            className="text-sm font-semibold text-blue-600 hover:underline"
+            className="text-sm font-semibold text-emerald-400 hover:underline"
           >
             ← Back to Preview
           </button>
-          <h1 className="text-3xl font-bold text-gray-900 mt-2">{quiz.title}</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-3xl font-bold text-white mt-2">{quiz.title}</h1>
+          <p className="text-slate-400 text-sm mt-1">
             Answer all questions below and submit your quiz.
           </p>
         </div>
@@ -299,18 +303,18 @@ export default function QuizPlayerPage() {
           return (
             <div
               key={qId || idx}
-              className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4"
+              className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-4"
             >
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Question {idx + 1} of {quiz.questions.length}
                 </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded font-medium">
+                <span className="text-xs bg-slate-800 text-emerald-400 px-2.5 py-1 rounded font-semibold border border-slate-700">
                   {q.type}
                 </span>
               </div>
 
-              <h3 className="text-lg font-semibold text-gray-800">{q.text}</h3>
+              <h3 className="text-lg font-bold text-white">{q.text}</h3>
 
               {/* BOOLEAN */}
               {q.type === 'BOOLEAN' && (
@@ -318,10 +322,10 @@ export default function QuizPlayerPage() {
                   {['true', 'false'].map((val) => (
                     <label
                       key={val}
-                      className={`flex-1 p-3 border rounded-xl cursor-pointer text-center font-medium capitalize transition-colors ${
+                      className={`flex-1 p-3.5 border rounded-xl cursor-pointer text-center font-medium capitalize transition-all ${
                         answers[qId] === val
-                          ? 'border-blue-600 bg-blue-50 text-blue-700'
-                          : 'border-gray-200 hover:bg-gray-50'
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-semibold shadow-sm'
+                          : 'border-slate-700 bg-slate-800/60 text-slate-200 hover:bg-slate-800 hover:border-slate-600'
                       }`}
                     >
                       <input
@@ -332,7 +336,7 @@ export default function QuizPlayerPage() {
                         onChange={(e) => handleSingleAnswer(qId, e.target.value)}
                         className="sr-only"
                       />
-                      {val}
+                      <span>{val}</span>
                     </label>
                   ))}
                 </div>
@@ -343,7 +347,7 @@ export default function QuizPlayerPage() {
                 <div className="pt-2">
                   <input
                     type="text"
-                    className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full border border-slate-700 bg-slate-800 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
                     placeholder="Type your answer here..."
                     value={(answers[qId] as string) || ''}
                     onChange={(e) => handleSingleAnswer(qId, e.target.value)}
@@ -361,19 +365,19 @@ export default function QuizPlayerPage() {
                     return (
                       <label
                         key={opt}
-                        className={`flex items-center p-3 border rounded-xl cursor-pointer text-sm font-medium transition-colors ${
+                        className={`flex items-center p-3.5 border rounded-xl cursor-pointer text-sm font-medium transition-all ${
                           isChecked
-                            ? 'border-blue-600 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:bg-gray-50'
+                            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 font-semibold shadow-sm'
+                            : 'border-slate-700 bg-slate-800/60 text-slate-200 hover:bg-slate-800 hover:border-slate-600'
                         }`}
                       >
                         <input
                           type="checkbox"
                           checked={isChecked}
                           onChange={() => handleCheckboxAnswer(qId, opt)}
-                          className="w-4 h-4 text-blue-600 rounded mr-3"
+                          className="w-4 h-4 text-emerald-500 rounded mr-3 focus:ring-emerald-500/20 bg-slate-800 border-slate-700"
                         />
-                        {opt}
+                        <span>{opt}</span>
                       </label>
                     );
                   })}
@@ -387,7 +391,7 @@ export default function QuizPlayerPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50"
+            className="px-8 py-3 bg-emerald-500 text-slate-950 font-bold rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20 disabled:opacity-50"
           >
             {submitting ? 'Submitting...' : 'Submit Answers'}
           </button>
