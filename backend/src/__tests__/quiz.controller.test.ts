@@ -1,4 +1,4 @@
-import { createQuiz, getQuizById, submitQuiz } from '../controllers/quiz.controller';
+import { createQuiz, getQuizById, deleteQuiz } from '../controllers/quiz.controller';
 import { QuizService } from '../services/quiz.service';
 
 jest.mock('../services/quiz.service');
@@ -61,6 +61,30 @@ describe('QuizController', () => {
 
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({ error: 'Quiz not found' });
+    });
+  });
+
+  describe('deleteQuiz', () => {
+    it('should return 404 if quiz to delete is not found', async () => {
+      req.params.id = 'missing-id';
+      (QuizService.getQuizById as jest.Mock).mockResolvedValue(null);
+
+      await deleteQuiz(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Quiz not found' });
+    });
+
+    it('should return 204 No Content on successful delete', async () => {
+      const existingQuiz = { id: 'uuid-1', title: 'My Quiz', questions: [] };
+      req.params.id = 'uuid-1';
+      (QuizService.getQuizById as jest.Mock).mockResolvedValue(existingQuiz);
+      (QuizService.deleteQuiz as jest.Mock).mockResolvedValue(existingQuiz);
+
+      await deleteQuiz(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(204);
+      expect(res.send).toHaveBeenCalled();
     });
   });
 });

@@ -1,18 +1,3 @@
-import { Router } from 'express';
-import {
-  createQuiz,
-  getAllQuizzes,
-  getQuizById,
-  submitQuiz,
-  deleteQuiz,
-} from '../controllers/quiz.controller';
+import quizRoutes from './v1/quiz.routes';
 
-const router = Router();
-
-router.post('/', createQuiz);
-router.get('/', getAllQuizzes);
-router.get('/:id', getQuizById);
-router.post('/:id/submit', submitQuiz);
-router.delete('/:id', deleteQuiz);
-
-export default router;
+export default quizRoutes;

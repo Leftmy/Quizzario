@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import quizRoutes from './routes/quiz.routes';
+import v1Router from './routes/v1';
 
 dotenv.config();
 
@@ -11,7 +11,14 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/quizzes', quizRoutes);
+// API Version 1
+app.use('/api/v1', v1Router);
+
+// Legacy / unversioned fallback alias (/api/quizzes -> /api/v1/quizzes)
+app.use('/api/quizzes', (req, res, next) => {
+  req.url = `/quizzes${req.url}`;
+  v1Router(req, res, next);
+});
 
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);

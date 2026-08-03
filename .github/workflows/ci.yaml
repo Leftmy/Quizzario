@@ -62,4 +62,26 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: "postgresql://postgres:postgrespassword@localhost:5432/quiz_db?schema=public"
-        run: npm test --if-present
+        run: npm test
+
+  lint-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Run Frontend Lint
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+        run: npm run lint
